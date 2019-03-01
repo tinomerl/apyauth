@@ -9,6 +9,8 @@ clientSecret = "d603bb1e-1435-4ece-b11c-6be56ca31ad4"
 
 app = oauth_app("hubspot",clientId, clientSecret)
 
+# Ich mache hier nur Tests
+
 hubspot = oauth_endpoint(authorize = authUrl, access = tokenUrl)
 
 token = oauth2.0_token(hubspot,app, scope = c("business-intelligence"))
