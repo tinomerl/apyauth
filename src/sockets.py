@@ -11,8 +11,6 @@ sock.bind(server_address)
 # Listen for incoming connections
 sock.listen(1)
 
-# Test Comment
-
 while True:
     # Wait for a connection
     print >>sys.stderr, 'waiting for a connection'
