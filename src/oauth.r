@@ -11,6 +11,7 @@ app = oauth_app("hubspot",clientId, clientSecret)
 
 # Ich mache hier nur Tests
 
+# arbeite ich hier im Branch??!?!
 hubspot = oauth_endpoint(authorize = authUrl, access = tokenUrl)
 
 token = oauth2.0_token(hubspot,app, scope = c("business-intelligence"))
