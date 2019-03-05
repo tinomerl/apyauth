@@ -13,9 +13,11 @@ def incoming(host, port):
   sock.bind((host, port))
   sock.listen(0)   # do not queue connections
   request, addr = sock.accept()
+  ## With this little Piece of Code you got what you needed
+  answer = request.recv(1024)
+  return answer
 
-  ## Try it tomorrow again with recv or sendall eins von den beiden
-  return request.makefile('r', 0)
+var = incoming(HOST, PORT)
 
 for line in incoming(HOST, PORT):
   print(line),
