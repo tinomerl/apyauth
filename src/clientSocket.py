@@ -18,7 +18,3 @@ def incoming(host, port):
   return answer
 
 var = incoming(HOST, PORT)
-
-for line in incoming(HOST, PORT):
-  print(line),
-  var = (line),
