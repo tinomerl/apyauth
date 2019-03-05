@@ -16,3 +16,5 @@ def fin():
     server.shutdown()
 
 print('server running on port {}'.format(server.server_port))
+
+print(SimpleHTTPRequestHandler.)
