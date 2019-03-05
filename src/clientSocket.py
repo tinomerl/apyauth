@@ -1,7 +1,7 @@
 import socket
 
 HOST = 'localhost'   # use '' to expose to all networks
-PORT = 12345
+PORT = 1410
 
 def incoming(host, port):
   """Open specified port and return file-like object"""
