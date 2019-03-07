@@ -17,4 +17,4 @@ def incoming(host, port):
   answer = request.recv(1024)
   return answer
 
-var = incoming(HOST, PORT)
+var = incoming(HOST, PORT)         
