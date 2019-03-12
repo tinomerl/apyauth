@@ -25,5 +25,8 @@ end = "20190131"
 breakTimeUrl = paste(analyticsBase,breakdown,timeperiod, sep = "/")
 reqUrl = paste0(breakTimeUrl,"?start=",start,"&end=",end)
 
-resp = GET(reqUrl, add_headers(Accept = "application/json", Authorization = paste("Bearer", tkn, sep = " "), `Content-Type` = "application/json"))
+resp = GET(templatesBase, add_headers(Accept = "application/json", Authorization = paste("Bearer", tkn, sep = " "), `Content-Type` = "application/json"))
 data = jsonlite::fromJSON(rawToChar(resp$content))
+
+
+## Finally enough rights

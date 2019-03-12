@@ -14,7 +14,10 @@ def incoming(host, port):
   sock.listen(0)   # do not queue connections
   request, addr = sock.accept()
   ## With this little Piece of Code you got what you needed
+  # sock.send("Some String")
   answer = request.recv(1024)
   return answer
 
 var = incoming(HOST, PORT)
+
+var
