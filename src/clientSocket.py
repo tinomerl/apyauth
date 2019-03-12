@@ -18,6 +18,10 @@ def incoming(host, port):
   answer = request.recv(1024)
   return answer
 
+<<<<<<< HEAD
 var = incoming(HOST, PORT)
 
 var
+=======
+var = incoming(HOST, PORT)         
+>>>>>>> 17b690923a76d061c71225d71f09a4060ba9f672
