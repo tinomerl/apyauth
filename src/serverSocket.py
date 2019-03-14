@@ -1,6 +1,6 @@
 import socket
 
-HOST = 'localhost'   # use '' to expose to all networks
+HOST = ''   # use '' to expose to all networks
 PORT = 1410
 
 def incoming(host, port):
@@ -16,8 +16,17 @@ def incoming(host, port):
   ## With this little Piece of Code you got what you needed
   # sock.send("Some String")
   answer = request.recv(1024)
+
+  file = open("index.html", 'r')
+  sock.sendall(str.encode("HTTP/1.0 200 OK\n",'iso-8859-1'))
+  sock.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
+  sock.send(str.encode('\r\n'))
+
+  for l in file.readlines():
+    print('Sent ', repr(l))
+    sock.sendall(str.encode(""+l+"", 'iso-8859-1'))
+    l = f.read(1024)
+    
   return answer
 
 var = incoming(HOST, PORT)
-
-var

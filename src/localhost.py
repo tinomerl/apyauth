@@ -7,7 +7,7 @@ except ImportError:
     HTTPServer = BaseHTTPServer.HTTPServer
     from SimpleHTTPServer import SimpleHTTPRequestHandler # Python 2
 
-server = HTTPServer(('localhost', 1410), SimpleHTTPRequestHandler)
+server = HTTPServer(('', 1410), SimpleHTTPRequestHandler)
 thread = threading.Thread(target = server.serve_forever)
 thread.daemon = True
 thread.start()
