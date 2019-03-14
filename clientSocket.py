@@ -6,7 +6,7 @@ while 1:
     data = client_socket.recv(512)
     if ( data == 'q' or data == 'Q'):
         client_socket.close()
-        break;
+        break
     else:
         print "RECIEVED:" , data
         data = raw_input ( "SEND( TYPE q or Q to Quit):" )
@@ -15,4 +15,4 @@ while 1:
         else:
             client_socket.send(data)
             client_socket.close()
-            break;
+            break
