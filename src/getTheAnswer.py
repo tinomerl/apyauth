@@ -39,3 +39,5 @@ def incoming(host, port):
     return req
 
 var = incoming('', 1410)
+newvar = var.decode("UTF-8").splitlines()
+newvar[0]
