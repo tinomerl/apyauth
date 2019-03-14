@@ -9,4 +9,3 @@ def createPage():
 
 value = createPage()
 os.remove(value)
-
