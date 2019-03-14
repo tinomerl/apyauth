@@ -6,6 +6,3 @@ def createPage():
     f.write("<html><body><p>Python has created this Page for the API Call. It can now be closed.</p></body></html>")
     f.close()
     return htmlFile
-
-value = createPage()
-os.remove(value)

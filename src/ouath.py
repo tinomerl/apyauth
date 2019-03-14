@@ -30,7 +30,7 @@ buildUrl = authUrl + "?client_id=" + clientId + "&scope=" + scope + "&redirect_u
 authorizationURL, state = oauth.authorization_url(authUrl)
 
 ### Exchange Security Codes
-print 'Please go to %s and authorize access.' % authorizationURL
+print('Please go to %s and authorize access.') % authorizationURL
 authorization_response = raw_input('Enter the full callback URL')
 
 ### Get a Token
