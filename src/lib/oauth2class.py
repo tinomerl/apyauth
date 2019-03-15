@@ -76,7 +76,6 @@ class oauth2:
         self.grantType = 'authorization_code'
         self.headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
         self.data = 'grant_type=authorization_code&client_id=' + self.clientId + '&client_secret=' + self.clientSecret + '&redirect_uri=' + self.redirect + '&code=' + self.code
-        #self.res = self.portListen()
         self.tokenReq = requests.post(self.tokenEndpoint, data = self.data, headers = self.headers)
         self.token = ast.literal_eval(self.tokenReq.content)['access_token']
         return self.token
