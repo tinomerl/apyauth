@@ -1,3 +1,10 @@
+#.....Oauth 2.0 Wrapper.....#
+#.....Send credentials......#
+#.......Receive Token.......#
+#.....Author Tino Merl......#
+#........(c) 2019...........#
+#..........v0.1.............#
+
 # A Class for Oauth2.0 Authentication
 import webbrowser
 import os
