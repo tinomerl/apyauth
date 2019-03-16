@@ -11,25 +11,27 @@ import os
 import socket
 import requests
 import ast
+import random
+import string
 
 class oauth2:
-
-    ## Init. Client ID and Clientsecret are needed
     def __init__(self,clientid,clientsecret):
         self.clientId = clientid
         self.clientSecret = clientsecret
     
-    def authEndpoints(self,auth,token):
+    def oauthEndpoint(self, base = '', auth = '', token = '', refresh = ''):
         self.authEndpoint = auth
         self.tokenEndpoint = token
+        self.refresh = refresh
         
-    def authUrlBuild(self,scope):
+    def authUrlBuild(self,scope = ''):
         if len(scope) == 1 :
             self.scopes = ''.join(scope)   
         else:
             self.scopes = '%20'.join(scope)
-        self.redirect = 'http://localhost:1410'
-        self.authUrl = self.authEndpoint + '?client_id=' + self.clientId + '&scope=' + self.scopes + '&redirect_uri=' + self.redirect
+        self.state = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
+        self.redirect = 'http://localhost:1410/'
+        self.authUrl = self.authEndpoint + '?client_id=' + self.clientId + '&scope=' + self.scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state
 
     def createPage(self):
         self.htmlFile='index.html'
@@ -45,22 +47,19 @@ class oauth2:
         self.sock.bind((self.host, self.port))
         self.sock.listen(5)
         print('Started Listening')
-        self.csock, self.caddr = self.sock.accept()
-        self.req = self.csock.recv(1024)  # get the request, 1kB max
-        # Look in the first line of the request for a move command
-        # A move command should be e.g. 'http://server/move?a=90'
+        self.ressock, self.caddr = self.sock.accept()
+        self.req = self.ressock.recv(1024)
         self.filename = self.createPage()
         self.f = open(self.filename, 'r')
 
-        self.csock.sendall(str.encode("HTTP/1.0 200 OK\n",'iso-8859-1'))
-        self.csock.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
-        self.csock.send(str.encode('\r\n'))
-        # send data per line
+        self.ressock.sendall(str.encode("HTTP/1.0 200 OK\n",'iso-8859-1'))
+        self.ressock.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
+        self.ressock.send(str.encode('\r\n'))
         for l in self.f.readlines():
-            self.csock.sendall(str.encode(""+l+"", 'iso-8859-1'))
+            self.ressock.sendall(str.encode(""+l+"", 'iso-8859-1'))
             self.l = self.f.read(1024)
         self.f.close()
-        self.csock.close()
+        self.ressock.close()
         os.unlink(self.filename)
         return self.req
 
@@ -75,14 +74,20 @@ class oauth2:
         if self.res.find('?') > 0:
             print('You haven\'t written that statement yet')
         else:
-            self.res = self.res[self.res.find('=')+1:]
+            self.res = self.res[self.res.find('=')+1:self.res.find('&')]
         return self.res
 
-    def getToken(self):
+    def getToken(self, method = 'post'):
         self.code = self.getCode()
-        self.grantType = 'authorization_code'
-        self.headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
-        self.data = 'grant_type=authorization_code&client_id=' + self.clientId + '&client_secret=' + self.clientSecret + '&redirect_uri=' + self.redirect + '&code=' + self.code
-        self.tokenReq = requests.post(self.tokenEndpoint, data = self.data, headers = self.headers)
+        self.method = method
+        if (self.method == 'post'):
+            self.grantType = 'authorization_code'
+            self.headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
+            self.data = 'grant_type=authorization_code&client_id=' + self.clientId + '&client_secret=' + self.clientSecret + '&redirect_uri=' + self.redirect + '&code=' + self.code
+            self.tokenReq = requests.post(self.tokenEndpoint, data = self.data, headers = self.headers)
+        elif (self.method == 'get'):
+            print(self.tokenEndpoint + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + self.code)
+            self.tokenReq = requests.get(self.tokenEndpoint + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + self.code)
+        
         self.token = ast.literal_eval(self.tokenReq.content)['access_token']
         return self.token
