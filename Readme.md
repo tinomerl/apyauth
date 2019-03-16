@@ -1,7 +1,8 @@
 # Functional Class for OAuth2.0
 
 ## Current Version
-0.1
+0.2
 
 ## Works with
-* Hubspot Auth
+* Hubspot 
+* facebook
