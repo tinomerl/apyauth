@@ -10,7 +10,7 @@ import webbrowser
 import os
 import socket
 import requests
-import ast
+import json
 import random
 import string
 
@@ -89,5 +89,5 @@ class oauth2:
             print(self.tokenEndpoint + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + self.code)
             self.tokenReq = requests.get(self.tokenEndpoint + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + self.code)
         
-        self.token = ast.literal_eval(self.tokenReq.content)['access_token']
+        self.token = json.loads(self.tokenReq.content)['access_token']
         return self.token
