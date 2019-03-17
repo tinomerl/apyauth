@@ -6,3 +6,6 @@
 ## Works with
 * Hubspot 
 * facebook
+
+## Python Version
+3.7.2
