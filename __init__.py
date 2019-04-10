@@ -1,1 +1,1 @@
-import oauth2py.oauth2py as oauth2py
+import oauth2py.core as oauth2py
