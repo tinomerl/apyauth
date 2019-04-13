@@ -1,3 +1,4 @@
 .httr-oauth
 **/.vscode
 **/__pycache__
+**/tests

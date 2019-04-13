@@ -15,79 +15,90 @@ import random
 import string
 
 class oauth2:
-    def __init__(self,clientid,clientsecret):
+    def __init__(self,app,clientid,clientsecret):
         self.clientId = clientid
         self.clientSecret = clientsecret
+        self.app = app
+        self.state = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
+        self.redirect = 'http://localhost:1410/'
     
     def oauthEndpoint(self, base = '', auth = '', token = '', refresh = ''):
-        self.authEndpoint = auth
-        self.tokenEndpoint = token
-        self.refresh = refresh
+        endpoints = {'base': base, 'auth': auth, 'token': token, 'refresh': refresh}
+        self.endpoints = endpoints
         
     def authUrlBuild(self,scope = ''):
         if len(scope) == 1 :
-            self.scopes = ''.join(scope)   
+            scopes = ''.join(scope)   
         else:
-            self.scopes = '%20'.join(scope)
-        self.state = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
-        self.redirect = 'http://localhost:1410/'
-        self.authUrl = self.authEndpoint + '?client_id=' + self.clientId + '&scope=' + self.scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state
+            scopes = '%20'.join(scope)
+        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state
+        return authUrl
 
     def createPage(self):
-        self.htmlFile='index.html'
-        f=open(self.htmlFile, 'w')
+        htmlFile='index.html'
+        f=open(htmlFile, 'w')
         f.write("<html><body><p>Python has created this Page for the Authentication. It can now be closed.</p></body></html>")
         f.close()
-        return self.htmlFile
+        return htmlFile
 
     def portListen(self):
-        self.host = 'localhost'
-        self.port = 1410
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind((self.host, self.port))
-        self.sock.listen(5)
+        host = 'localhost'
+        port = 1410
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind((host, port))
+        sock.listen(5)
         print('Started Listening')
-        self.ressock, self.caddr = self.sock.accept()
-        self.req = self.ressock.recv(1024)
-        self.filename = self.createPage()
-        self.f = open(self.filename, 'r')
+        print('Waiting for Connection on port 1410 on localhost')
+        ressock, caddr = sock.accept()
+        req = ressock.recv(1024)
+        filename = self.createPage()
+        f = open(filename, 'r')
+        ressock.sendall(str.encode("HTTP/1.0 200 OK\n",'iso-8859-1'))
+        ressock.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
+        ressock.send(str.encode('\r\n'))
+        for l in f.readlines():
+            ressock.sendall(str.encode(""+l+"", 'iso-8859-1'))
+            l = f.read(1024)
+        f.close()
+        ressock.close()
+        os.unlink(filename)
+        return req
 
-        self.ressock.sendall(str.encode("HTTP/1.0 200 OK\n",'iso-8859-1'))
-        self.ressock.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
-        self.ressock.send(str.encode('\r\n'))
-        for l in self.f.readlines():
-            self.ressock.sendall(str.encode(""+l+"", 'iso-8859-1'))
-            self.l = self.f.read(1024)
-        self.f.close()
-        self.ressock.close()
-        os.unlink(self.filename)
-        return self.req
-
-    def getCode(self):
-        webbrowser.open(self.authUrl)
-        self.res = self.portListen()
-        self.res = self.res.decode('utf-8').splitlines()
-        self.res = self.res[0]
-        self.res = self.res[self.res.find('?')+1:]
-        self.res = self.res[:self.res.find(' ')]
-
-        if self.res.find('?') > 0:
-            print('You haven\'t written that statement yet')
+    def getCode(self,authUrl):
+        webbrowser.open(authUrl)
+        res = self.portListen()
+        res = res.decode('utf-8').splitlines()
+        res = res[0]
+        state = res[res.find('state=')+6:res.find('HTTP')-1]
+        if self.state != state:
+            print('SessionError')
+            exit()
         else:
-            self.res = self.res[self.res.find('=')+1:self.res.find('&')]
-        return self.res
+            pass
 
-    def getToken(self, method = 'post'):
-        self.code = self.getCode()
-        self.method = method
-        if (self.method == 'post'):
-            self.grantType = 'authorization_code'
-            self.headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
-            self.data = 'grant_type=authorization_code&client_id=' + self.clientId + '&client_secret=' + self.clientSecret + '&redirect_uri=' + self.redirect + '&code=' + self.code
-            self.tokenReq = requests.post(self.tokenEndpoint, data = self.data, headers = self.headers)
-        elif (self.method == 'get'):
-            print(self.tokenEndpoint + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + self.code)
-            self.tokenReq = requests.get(self.tokenEndpoint + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + self.code)
+        code = res[res.find('code=')+5:]
+        code = code[:code.find('&')]
+        return code
+
+    def getToken(self, method = 'post', scope = ''):
+        #ans = input('do you wanna save between sessions? Y/N')
+        ans = 'Y'
+        authUrl = self.authUrlBuild(scope = scope)
+        code = self.getCode(authUrl)
+        if (method == 'post'):
+            headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
+            data = 'grant_type=authorization_code&client_id=' + self.clientId + '&client_secret=' + self.clientSecret + '&redirect_uri=' + self.redirect + '&code=' + code
+            tokenReq = requests.post(self.endpoints['token'], data = data, headers = headers)
+        elif (method == 'get'):
+            print(self.endpoints['token'] + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + code)
+            tokenReq = requests.get(self.endpoints['token'] + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + code)
         
-        self.token = json.loads(self.tokenReq.content)['access_token']
-        return self.token
+        if ans.upper() == 'Y':
+            f = open(('.' + self.app + '-token'), 'w+')
+            f.write(json.loads(tokenReq.content))
+            f.close
+        else:
+            pass
+
+        token = json.loads(tokenReq.content)['access_token']
+        return token
