@@ -81,8 +81,7 @@ class oauth2:
         return code
 
     def getToken(self, method = 'post', scope = ''):
-        #ans = input('do you wanna save between sessions? Y/N')
-        ans = 'Y'
+        ans = input('do you wanna save between sessions? Y/N')
         authUrl = self.authUrlBuild(scope = scope)
         code = self.getCode(authUrl)
         if (method == 'post'):
@@ -95,7 +94,7 @@ class oauth2:
         
         if ans.upper() == 'Y':
             f = open(('.' + self.app + '-token'), 'w+')
-            f.write(json.loads(tokenReq.content))
+            f.write(str(json.loads(tokenReq.content)))
             f.close
         else:
             pass
