@@ -16,7 +16,7 @@ instance = oauth2py.oauth('serviceName', clientid, clientsecret)
 scope = ['scope1', 'scope2']
 instance.oauthEndpoints(auth = 'https://example/authendpoint', token = 'https://example/tokenendpoint', refresh = 'https://example/refreshendpoint')
 
-# Start the token Function and choose the Method and overhand the Scopes
+# Start the token Function, choose the Method and overhand the Scopes
 tkn = instance.accessToken(method = 'post',scope = scope)
 ```
 A prompt will ask you if you want to save the token between Sessions. This comes in handy if you want to refresh your Token later.
