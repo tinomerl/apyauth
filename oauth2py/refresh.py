@@ -2,7 +2,7 @@ import ast
 import requests
 import json
 import os
-import oauth2py.oauth.oauthEndpoints
+import oauth2py.oauthEndpoints
 
 class refreshTkn(oauth2py.oauthEndpoints.defEndpoints):
     def __init__(self,app,clientid,clientsecret):
