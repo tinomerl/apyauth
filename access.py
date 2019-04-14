@@ -1,11 +1,3 @@
-#.....Oauth 2.0 Wrapper.....#
-#.....Send credentials......#
-#.......Receive Token.......#
-#.....Author Tino Merl......#
-#........(c) 2019...........#
-#..........v0.1.............#
-
-# A Class for Oauth2.0 Authentication
 import webbrowser
 import os
 import socket
@@ -13,6 +5,8 @@ import requests
 import json
 import random
 import string
+import datetime
+from dateutil import tz
 import oauth2py.oauthEndpoints
 
 class oauth2(oauth2py.oauthEndpoints.defEndpoints):
@@ -65,19 +59,30 @@ class oauth2(oauth2py.oauthEndpoints.defEndpoints):
     def getCode(self,authUrl):
         webbrowser.open(authUrl)
         res = self.portListen()
-        print(res)
         res = res.decode('utf-8').splitlines()
         res = res[0]
-        state = res[res.find('state=')+6:res.find('HTTP')-1]
+        params = res[res.find('?')+1:res.find('HTTP')-1]
+        paramsList = params.split('&')
+        paramsDict = {}
+        for i in paramsList:
+            key, val = i.split('=')
+            paramsDict.update({key: val})
+
+        state = paramsDict['state']
         if self.state != state:
             print('SessionError')
             exit()
         else:
             pass
-
-        code = res[res.find('code=')+5:]
-        code = code[:code.find('&')]
+        code = paramsDict['code']
         return code
+
+    def calcExpiryDate(self,respDate, expiresIn):
+        expiryDate = datetime.datetime.strptime(respDate,'%a, %d %b %Y %H:%M:%S GMT') + datetime.timedelta(seconds = expiresIn)
+        fromtz =  tz.tzutc()
+        totz = tz.tzlocal()
+        expiryDate = datetime.datetime.strftime(expiryDate.replace(tzinfo=fromtz).astimezone(totz),'%Y-%m-%d %H:%M:%S')
+        return expiryDate
 
     def accessToken(self, method = 'post', scope = ''):
         ans = input('do you wanna save between sessions? Y/N')
@@ -91,13 +96,18 @@ class oauth2(oauth2py.oauthEndpoints.defEndpoints):
             print(self.endpoints['token'] + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + code)
             tokenReq = requests.get(self.endpoints['token'] + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + code)
         
+        headers = tokenReq.headers
+        tokens = json.loads(tokenReq.content)
+        expiryDate = self.calcExpiryDate(headers['Date'],tokens['expires_in'])
+        tokens.update({'expiryDate': expiryDate})
+
         if ans.upper() == 'Y':
             f = open(('.' + self.app + '-token'), 'w+')
-            f.write(str(json.loads(tokenReq.content)))
+            f.write(str(tokens))
             f.close
         else:
             pass
-
-        token = json.loads(tokenReq.content)['access_token']
-        self.tokenReq = tokenReq
-        return token
+        
+        accToken = tokens['access_token']
+        
+        return accToken
