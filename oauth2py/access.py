@@ -38,7 +38,7 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
             scopes = ''.join(scope)   
         else:
             scopes = '%20'.join(scope)
-        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state + '&response_type=code'
+        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state + '&response_type=code&access_type=offline'
         return authUrl
 
     def createPage(self):
@@ -56,7 +56,6 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
     def portListen(self):
         """
         Opens a port and Listens to Response.
-
 
         The function opens a socket on http://localhost:1410/ creates a webpage and catches the Response. When it registers an incoming session the socket is closed. It also deletes the created HTML Page.
         Returns:\n
@@ -117,7 +116,8 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         return code
 
     def calcExpiryDate(self,respDate, expiresIn):
-        """Calculates the Expirydate of the Access Token.
+        """
+        Calculates the Expirydate of the Access Token.
 
         Keyword Arguments: \n
         respDate -- Date taken out of the Header of the Response.\n
