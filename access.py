@@ -29,7 +29,7 @@ class oauth2(oauth2py.oauthEndpoints.defEndpoints):
             scopes = ''.join(scope)   
         else:
             scopes = '%20'.join(scope)
-        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state
+        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state + '&response_type=code'
         return authUrl
 
     def createPage(self):
@@ -65,6 +65,7 @@ class oauth2(oauth2py.oauthEndpoints.defEndpoints):
     def getCode(self,authUrl):
         webbrowser.open(authUrl)
         res = self.portListen()
+        print(res)
         res = res.decode('utf-8').splitlines()
         res = res[0]
         state = res[res.find('state=')+6:res.find('HTTP')-1]

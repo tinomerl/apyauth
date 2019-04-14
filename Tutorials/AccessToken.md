@@ -14,10 +14,10 @@ instance = oauth2py.oauth('serviceName', clientid, clientsecret)
 
 # Define optional Scopes and overhand the needed Endpoints
 scope = ['scope1', 'scope2']
-instanz.oauthEndpoints(auth = 'https://example/authendpoint', token = 'https://example/tokenendpoint', refresh = 'https://example/refreshendpoint')
+instance.oauthEndpoints(auth = 'https://example/authendpoint', token = 'https://example/tokenendpoint', refresh = 'https://example/refreshendpoint')
 
 # Start the token Function and choose the Method and overhand the Scopes
-tkn = instanz.accessToken(method = 'post',scope = scope)
+tkn = instance.accessToken(method = 'post',scope = scope)
 ```
 A prompt will ask you if you want to save the token between Sessions. This comes in handy if you want to refresh your Token later.
 The access and refresh Token will be saved in the current working directory with the name of the service in the file extension. 
