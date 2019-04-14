@@ -13,18 +13,16 @@ import requests
 import json
 import random
 import string
+import oauth2py.oauthEndpoints
 
-class oauth2:
+class oauth2(oauth2py.oauthEndpoints.defEndpoints):
     def __init__(self,app,clientid,clientsecret):
         self.clientId = clientid
         self.clientSecret = clientsecret
         self.app = app
         self.state = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
         self.redirect = 'http://localhost:1410/'
-    
-    def oauthEndpoint(self, base = '', auth = '', token = '', refresh = ''):
-        endpoints = {'base': base, 'auth': auth, 'token': token, 'refresh': refresh}
-        self.endpoints = endpoints
+        oauth2py.oauthEndpoints.defEndpoints.__init__(self)
         
     def authUrlBuild(self,scope = ''):
         if len(scope) == 1 :
@@ -80,9 +78,8 @@ class oauth2:
         code = code[:code.find('&')]
         return code
 
-    def getToken(self, method = 'post', scope = ''):
-        #ans = input('do you wanna save between sessions? Y/N')
-        ans = 'Y'
+    def accessToken(self, method = 'post', scope = ''):
+        ans = input('do you wanna save between sessions? Y/N')
         authUrl = self.authUrlBuild(scope = scope)
         code = self.getCode(authUrl)
         if (method == 'post'):
@@ -95,10 +92,11 @@ class oauth2:
         
         if ans.upper() == 'Y':
             f = open(('.' + self.app + '-token'), 'w+')
-            f.write(json.loads(tokenReq.content))
+            f.write(str(json.loads(tokenReq.content)))
             f.close
         else:
             pass
 
         token = json.loads(tokenReq.content)['access_token']
+        self.tokenReq = tokenReq
         return token
