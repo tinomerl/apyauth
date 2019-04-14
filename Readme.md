@@ -11,6 +11,12 @@
 ## Python Version
 3.7.2
 
+## Installation
+For installing execute the following.
+```python 
+pip install git+https://github.com/troopertino/oauth2py.git
+```
+
 ## Usage
 For Usage Read the Tutorials
 
