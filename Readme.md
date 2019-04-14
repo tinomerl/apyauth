@@ -9,3 +9,5 @@
 
 ## Python Version
 3.7.2
+
+For Usage Read the Tutorials
