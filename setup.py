@@ -12,6 +12,5 @@ setuptools.setup(name = 'oauth2py',
         'string',
         'datetime'
         'dateutil',
-        'ast',
-        'os'
+        'ast'
     ])

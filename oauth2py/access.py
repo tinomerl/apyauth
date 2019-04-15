@@ -73,7 +73,7 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         """
         Opens a port and Listens to Response.
 
-        The function opens a socket on http://localhost:1410/ creates a webpage and catches the Response. When it registers an incoming session the socket is closed. It also deletes the created HTML Page.
+        The method opens a socket on http://localhost:1410/ creates a webpage and catches the Response. When it registers an incoming session the socket is closed. It also deletes the created HTML Page.
         Returns:\n
         The received Information on the port.
         """
