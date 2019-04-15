@@ -3,7 +3,7 @@
 ## Current Version
 0.3
 
-## Works with
+## Tested and working with following oauth Endpoints
 * Hubspot 
 * facebook
 * Google
