@@ -18,12 +18,13 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         self.redirect = 'http://localhost:1410/'
         oauth2py.oauthEndpoints.defEndpoints.__init__(self)
         
-    def authUrlBuild(self,scope = ''):
+    def authUrlBuild(self,scope = '', additionalParams = ''):
         """
         Constructs the Authentication URL.
         
         Keyword Arguments:\n
-        scope -- The scope some oauth Endpoints require to be set in the Authentication URL.
+        scope -- The scope some oauth Endpoints require to be set in the Authentication URL.\n
+        additionalParams -- Extra Parameters needed for the Authentication. Needs to be defined as a dictionary.
 
         Returns:\n
         An URL with following parameters added:
@@ -38,7 +39,14 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
             scopes = ''.join(scope)   
         else:
             scopes = '%20'.join(scope)
-        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state + '&response_type=code&access_type=offline'
+
+        extraParams = ''
+        if len(additionalParams) != 0:
+            for key in additionalParams:
+                extraParams = extraParams + '&' + key + '=' + additionalParams[key]
+        else:
+            pass
+        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state + '&response_type=code' + extraParams
         return authUrl
 
     def createPage(self):
@@ -134,13 +142,14 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         expiryDate = datetime.datetime.strftime(expiryDate.replace(tzinfo=fromtz).astimezone(totz),'%Y-%m-%d %H:%M:%S')
         return expiryDate
 
-    def accessToken(self, method = 'post', scope = ''):
+    def accessToken(self, method = 'post', scope = '', additionalParams = ''):
         """
         This function gets the Access Token and saves it.
 
         Keyword Arguments:\n
         method -- Request method.\n
-        scope -- scope needed for the Authentication.
+        scope -- scope needed for the Authentication.\nS
+        additionalParams -- Extra Parameters needed by the Auth Server. Needs to be defined as a dictionary.
 
         The Function calls the authUrlBuild and overhands the constructed URL to the getCode Function to receive the code needed for the Access Token.
         Afterwards it calls the token Endpoint and exchanges the code for a token.
@@ -151,7 +160,7 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         """
 
         ans = input('do you wanna save between sessions? Y/N')
-        authUrl = self.authUrlBuild(scope = scope)
+        authUrl = self.authUrlBuild(scope = scope, additionalParams='')
         code = self.getCode(authUrl)
         if (method == 'post'):
             headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
