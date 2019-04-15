@@ -10,6 +10,14 @@ from dateutil import tz
 import oauth2py.oauthEndpoints
 
 class access(oauth2py.oauthEndpoints.defEndpoints):
+    """
+    Class for an Access Token. 
+
+    Inherits:\n
+    The oauthEndpoints method from the oauthEndpoints class.
+
+    This class generates an AuthUrl, sends the User to an Oauth Screen, Listens to the Response on a Localhost port and exchanges the code for an access Token. Furthermore it can save the content of the Response from the tokenendpoint in a file if needed. 
+    """
     def __init__(self,app,clientid,clientsecret):
         self.clientId = clientid
         self.clientSecret = clientsecret
@@ -77,9 +85,12 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         print('Started Listening')
         print('Waiting for Connection on port 1410 on localhost')
         ressock, caddr = sock.accept()
+        # response = sock.accept()
+        # ressock = response[0]
         req = ressock.recv(1024)
         filename = self.createPage()
         f = open(filename, 'r')
+        
         ressock.sendall(str.encode("HTTP/1.0 200 OK\n",'iso-8859-1'))
         ressock.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
         ressock.send(str.encode('\r\n'))
@@ -160,7 +171,8 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         """
 
         ans = input('do you wanna save between sessions? Y/N')
-        authUrl = self.authUrlBuild(scope = scope, additionalParams='')
+        authUrl = self.authUrlBuild(scope = scope, additionalParams= additionalParams)
+        print(authUrl)
         code = self.getCode(authUrl)
         if (method == 'post'):
             headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
