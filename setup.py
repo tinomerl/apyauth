@@ -2,6 +2,7 @@ import setuptools
 
 setuptools.setup(name = 'oauth2py', 
     version = '0.3.1',
+    license = 'MIT',
     packages = setuptools.find_packages(),
     description = 'Handy module for oauth2.0 Authentication.',
     install_requires =[
