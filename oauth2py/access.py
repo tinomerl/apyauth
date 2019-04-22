@@ -84,19 +84,15 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         sock.listen(5)
         print('Started Listening')
         print('Waiting for Connection on port 1410 on localhost')
-        ressock, caddr = sock.accept()
-        # response = sock.accept()
-        # ressock = response[0]
+        ressock, addr = sock.accept()
         req = ressock.recv(1024)
         filename = self.createPage()
         f = open(filename, 'r')
-        
         ressock.sendall(str.encode("HTTP/1.0 200 OK\n",'iso-8859-1'))
         ressock.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
         ressock.send(str.encode('\r\n'))
         for i in f.readlines():
-            ressock.sendall(str.encode(""+i+"", 'iso-8859-1'))
-            i = f.read(1024)
+            ressock.sendall(str.encode(i, 'iso-8859-1'))
         f.close()
         ressock.close()
         os.unlink(filename)
