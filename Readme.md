@@ -1,7 +1,7 @@
-# Functional Class for OAuth2.0
+# Functional Wrapper for OAuth2.0
 
 ## Current Version
-0.3
+0.3.1
 
 ## Tested and working with following oauth Endpoints
 * Hubspot 
