@@ -5,7 +5,7 @@ setuptools.setup(name = 'oauth2py',
     packages = setuptools.find_packages(),
     description = 'Handy module for oauth2.0 Authentication.',
     install_requires =[
-        'requests',
+        'requests-2.21.0',
         'json',
         'random',
         'string',
