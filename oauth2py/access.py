@@ -26,7 +26,7 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         self.redirect = 'http://localhost:1410/'
         oauth2py.oauthEndpoints.defEndpoints.__init__(self)
         
-    def authUrlBuild(self,scope = '', additionalParams = ''):
+    def authUrlBuild(self,scope,additionalParams):
         """
         Constructs the Authentication URL.
         

@@ -9,8 +9,10 @@
 
 import oauth2py.access as access
 import oauth2py.refresh as refresh
+import oauth2py.validate as validate
 
-class oauth(access.access,refresh.refreshTkn):
+class oauth(access.access, refresh.refreshTkn, validate.validateTkn):
     def __init__(self,app,clientid,clientsecret):
         access.access.__init__(self,app,clientid,clientsecret)
         refresh.refreshTkn.__init__(self,app,clientid,clientsecret)
+        validate.validateTkn.__init__(self,app)
