@@ -22,17 +22,18 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         self.clientId = clientid
         self.clientSecret = clientsecret
         self.app = app
-        self.state = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
+        #self.state = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
         self.redirect = 'http://localhost:1410/'
         oauth2py.oauthEndpoints.defEndpoints.__init__(self)
         
-    def authUrlBuild(self,scope = '', additionalParams = ''):
+    def authUrlBuild(self,scope,additionalParams,state):
         """
         Constructs the Authentication URL.
         
         Keyword Arguments:\n
         scope -- The scope some oauth Endpoints require to be set in the Authentication URL.\n
         additionalParams -- Extra Parameters needed for the Authentication. Needs to be defined as a dictionary.
+        state -- The State Parameter generated for the Session
 
         Returns:\n
         An URL with following parameters added:
@@ -54,7 +55,7 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
                 extraParams = extraParams + '&' + key + '=' + additionalParams[key]
         else:
             pass
-        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + self.state + '&response_type=code' + extraParams
+        authUrl = self.endpoints['auth'] + '?client_id=' + self.clientId + '&scope=' + scopes + '&redirect_uri=' + self.redirect + '&state=' + state + '&response_type=code' + extraParams
         return authUrl
 
     def createPage(self):
@@ -98,13 +99,14 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         os.unlink(filename)
         return req
 
-    def getCode(self,authUrl):
+    def getCode(self,authUrl,state):
         """
         Calls portListen. Processes Parameters.
 
         Keyword Arguments:\n
         authUrl -- The Authentication URL added with Parameters.
-
+        state -- The generated State Parameter to check if the Session is still the same
+        
         It reads all the parameters from the response and turns them into a dictionary. Exits if the state differs. 
        
         Returns:\n
@@ -121,8 +123,7 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
             key, val = i.split('=')
             paramsDict.update({key: val})
 
-        state = paramsDict['state']
-        if self.state != state:
+        if state != paramsDict['state']:
             print('SessionError')
             exit()
         else:
@@ -149,13 +150,12 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         expiryDate = datetime.datetime.strftime(expiryDate.replace(tzinfo=fromtz).astimezone(totz),'%Y-%m-%d %H:%M:%S')
         return expiryDate
 
-    def accessToken(self, method = 'post', scope = '', additionalParams = ''):
+    def accessToken(self, scope = '', additionalParams = ''):
         """
         This function gets the Access Token and saves it.
 
         Keyword Arguments:\n
-        method -- Request method.\n
-        scope -- scope needed for the Authentication.\nS
+        scope -- scope needed for the Authentication.\n
         additionalParams -- Extra Parameters needed by the Auth Server. Needs to be defined as a dictionary.
 
         The Function calls the authUrlBuild and overhands the constructed URL to the getCode Function to receive the code needed for the Access Token.
@@ -167,20 +167,20 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         """
 
         ans = input('do you wanna save between sessions? Y/N')
-        authUrl = self.authUrlBuild(scope = scope, additionalParams= additionalParams)
-        print(authUrl)
-        code = self.getCode(authUrl)
-        if (method == 'post'):
-            headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
-            data = 'grant_type=authorization_code&client_id=' + self.clientId + '&client_secret=' + self.clientSecret + '&redirect_uri=' + self.redirect + '&code=' + code
-            tokenReq = requests.post(self.endpoints['token'], data = data, headers = headers)
-        elif (method == 'get'):
-            print(self.endpoints['token'] + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + code)
+        state = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
+        authUrl = self.authUrlBuild(scope = scope, additionalParams= additionalParams, state = state)
+        code = self.getCode(authUrl,state)
+        headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
+        data = 'grant_type=authorization_code&client_id=' + self.clientId + '&client_secret=' + self.clientSecret + '&redirect_uri=' + self.redirect + '&code=' + code
+        tokenReq = requests.post(self.endpoints['token'], data = data, headers = headers)
+        if tokenReq.status_code == 200:
+            pass
+        elif tokenReq.status_code == 404:
             tokenReq = requests.get(self.endpoints['token'] + '?client_id=' + self.clientId + '&redirect_uri=' + self.redirect + '&client_secret=' + self.clientSecret + '&code=' + code)
         
-        headers = tokenReq.headers
+        headerResp = tokenReq.headers
         tokens = json.loads(tokenReq.content)
-        expiryDate = self.calcExpiryDate(headers['Date'],tokens['expires_in'])
+        expiryDate = self.calcExpiryDate(headerResp['Date'],tokens['expires_in'])
         tokens.update({'expiryDate': expiryDate})
 
         if ans.upper() == 'Y':
