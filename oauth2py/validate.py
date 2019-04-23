@@ -31,5 +31,5 @@ class validateTkn:
                 print('Access Token is still valid until ' + expiryDate)
                 return True
         except:
-            print('No token found for ' + self.app + ' in the current environment.')
+            print('No token or expiry Date found for ' + self.app + ' in the current environment.')
             return False

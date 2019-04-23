@@ -180,8 +180,11 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         
         headerResp = tokenReq.headers
         tokens = json.loads(tokenReq.content)
-        expiryDate = self.calcExpiryDate(headerResp['Date'],tokens['expires_in'])
-        tokens.update({'expiryDate': expiryDate})
+        try:
+            expiryDate = self.calcExpiryDate(headerResp['Date'],tokens['expires_in'])
+            tokens.update({'expiryDate': expiryDate})
+        except:
+            pass
 
         if ans.upper() == 'Y':
             f = open(('.' + self.app + '-token'), 'w+')
