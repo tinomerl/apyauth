@@ -1,12 +1,14 @@
 # Functional Wrapper for OAuth2.0
 
 ## Current Version
-0.3.1
+0.3.2
 
 ## Tested and working with following oauth Endpoints
 * Hubspot 
 * facebook
-* Google
+* Google 
+    * Analytics
+* Slack
 
 ## Python Version
 3.7.2
