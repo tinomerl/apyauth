@@ -17,7 +17,6 @@ class validateTkn:
         Return:\n
         Boolean that determines the current state of the Access Token. True if it is still valid. False if not and if there isn't any token.
         """
-
         try:
             f = open(('.' + self.app + '-token'), 'r')
             expiryDate = ast.literal_eval(f.read())['expiryDate']
@@ -31,5 +30,5 @@ class validateTkn:
                 print('Access Token is still valid until ' + expiryDate)
                 return True
         except:
-            print('No token found for ' + self.app + ' in the current environment.')
+            print('No token or expiry Date found for ' + self.app + ' in the current environment.')
             return False

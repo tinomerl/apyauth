@@ -22,10 +22,33 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         self.clientId = clientid
         self.clientSecret = clientsecret
         self.app = app
-        #self.state = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
         self.redirect = 'http://localhost:1410/'
         oauth2py.oauthEndpoints.defEndpoints.__init__(self)
-        
+
+    def appendgitignore(self):
+        """
+        Adds the tokens to the .gitignore.
+
+        This method adds the function to the .gitignore file if the user decides to store them between sessions.
+        """
+        try:
+            f = open('.gitignore','r')
+            lines = f.readlines()
+            f.close()
+            ingitignore = False
+            for l in lines:
+                if str('.*-token') in l:
+                    ingitignore = True
+
+            if ingitignore == False:
+                f = open('.gitignore','a+')
+                f.write('\n#Tokens\n.*-token')
+                f.close()
+        except:
+            f = open('.gitignore', 'w')
+            f.write('#Tokens\n.*-token')
+            f.close()
+
     def authUrlBuild(self,scope,additionalParams,state):
         """
         Constructs the Authentication URL.
@@ -180,13 +203,17 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         
         headerResp = tokenReq.headers
         tokens = json.loads(tokenReq.content)
-        expiryDate = self.calcExpiryDate(headerResp['Date'],tokens['expires_in'])
-        tokens.update({'expiryDate': expiryDate})
+        try:
+            expiryDate = self.calcExpiryDate(headerResp['Date'],tokens['expires_in'])
+            tokens.update({'expiryDate': expiryDate})
+        except:
+            pass
 
         if ans.upper() == 'Y':
             f = open(('.' + self.app + '-token'), 'w+')
             f.write(str(tokens))
             f.close
+            self.appendgitignore()
         else:
             pass
         
