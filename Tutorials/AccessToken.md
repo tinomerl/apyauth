@@ -16,7 +16,7 @@ instance = oauth2py.oauth('serviceName', clientid, clientsecret)
 scope = ['scope1', 'scope2']
 instance.oauthEndpoints(auth = 'https://example/authendpoint', token = 'https://example/tokenendpoint', refresh = 'https://example/refreshendpoint')
 
-# Start the token Function, choose the Method and overhand the Scopes
+# Start the token Function and overhand the Scopes
 tkn = instance.accessToken(scope = scope)
 ```
 A prompt will ask you if you want to save the token between Sessions. This comes in handy if you want to refresh your Token later.
@@ -30,6 +30,6 @@ Some Authentication Servers need additional Parameters for basic authentication 
 ```python
 # To add additional Parameters just use the Keyword Argument additionalParameters when calling the accessToken Method.
 
-tkn = instance.accessToken(method = 'post', scope = scope, additionalParams = {'key': 'value'})
+tkn = instance.accessToken(scope = scope, additionalParams = {'key': 'value'})
 ```
 As key you should set the name of the Parameter and as the value what the Parameter should contain. You can add as many additional Parameters as you want.
