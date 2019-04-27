@@ -13,7 +13,7 @@ clientsecret = 'zzzzz'
 instance = oauth2py.oauth('serviceName', clientid, clientsecret)
 scope = ['scope1', 'scope2']
 instance.oauthEndpoints(auth = 'https://example/authendpoint', token = 'https://example/tokenendpoint', refresh = 'https://example/refreshendpoint')
-tkn = instance.accessToken(method = 'post',scope = scope)
+tkn = instance.accessToken(scope = scope)
 
 newTkn = instance.refreshToken()
 ```
