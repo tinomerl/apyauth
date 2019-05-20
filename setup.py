@@ -1,6 +1,6 @@
 import setuptools
 
-setuptools.setup(name = 'oauth2py', 
+setuptools.setup(name = 'authpy', 
     version = '0.3.2',
     license = 'MIT',
     packages = setuptools.find_packages(),
