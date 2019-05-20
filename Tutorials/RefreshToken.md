@@ -6,11 +6,11 @@ For refreshing an Access Token there are three different scenarios. The Code Exa
 
 ```python
 # Same as the Access Token
-import oauth2py
+import apyauth
 
 clientid = 'xxxxx'
 clientsecret = 'zzzzz'
-instance = oauth2py.oauth('serviceName', clientid, clientsecret)
+instance = apyauth.oauth('serviceName', clientid, clientsecret)
 scope = ['scope1', 'scope2']
 instance.oauthEndpoints(auth = 'https://example/authendpoint', token = 'https://example/tokenendpoint', refresh = 'https://example/refreshendpoint')
 tkn = instance.accessToken(scope = scope)
@@ -20,11 +20,11 @@ newTkn = instance.refreshToken()
 
 2. The Instance where the Access Token was obtained is not running anymore but the Access and Refresh Token were saved in a file in the current working directory.
 ```python
-import oauth2py
+import apyauth
 
 clientid = 'xxxxx'
 clientsecret = 'zzzzz'
-instance = oauth2py.oauth('serviceName', clientid, clientsecret)
+instance = apyauth.oauth('serviceName', clientid, clientsecret)
 instance.oauthEndpoints(auth = 'https://example/authendpoint', token = 'https://example/tokenendpoint', refresh = 'https://example/refreshendpoint')
 
 newTkn = instance.refreshToken()
@@ -32,11 +32,11 @@ newTkn = instance.refreshToken()
 
 3. You have an Refresh Token saved in the clipboard.
 ```python
-import oauth2py
+import apyauth
 
 clientid = 'xxxxx'
 clientsecret = 'zzzzz'
-instance = oauth2py.oauth('serviceName', clientid, clientsecret)
+instance = apyauth.oauth('serviceName', clientid, clientsecret)
 instance.oauthEndpoints(auth = 'https://example/authendpoint', token = 'https://example/tokenendpoint', refresh = 'https://example/refreshendpoint')
 
 newTkn = instance.refreshToken()

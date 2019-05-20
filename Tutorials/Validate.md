@@ -1,11 +1,11 @@
 # How to validate an Access Token
 The validation of an Access Token can only be done when it is locally stored. To validate the local Access Token you can use the following code example.
 ```python
-import oauth2py
+import apyauth
 
 clientid = 'xxxxx'
 clientsecret = 'zzzzz'
-instance = oauth2py.oauth('serviceName', clientid, clientsecret)
+instance = apyauth.oauth('serviceName', clientid, clientsecret)
 
 tkn, tknState = instance.validate()
 ```

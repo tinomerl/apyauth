@@ -3,14 +3,14 @@
 Getting an Access Token is fairly easy with this library. The following Code Snippet should explain how it works.
 
 ```python
-import oauth2py
+import apyauth
 
 # Define the clientId and clientSecret
 clientid = 'xxxxx'
 clientsecret = 'zzzzz'
 
 # Initialize a Session with the Credentials and a Service name
-instance = oauth2py.oauth('serviceName', clientid, clientsecret)
+instance = apyauth.oauth('serviceName', clientid, clientsecret)
 
 # Define optional Scopes and overhand the needed Endpoints
 scope = ['scope1', 'scope2']
