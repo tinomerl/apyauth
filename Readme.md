@@ -16,7 +16,7 @@
 ## Installation
 For installing execute the following.
 ```python 
-pip install git+https://github.com/tinomerl/oauth2py.git
+pip install git+https://github.com/tinomerl/apyauth.git
 ```
 
 ## Usage
