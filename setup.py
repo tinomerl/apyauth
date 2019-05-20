@@ -1,6 +1,6 @@
 import setuptools
 
-setuptools.setup(name = 'authpy', 
+setuptools.setup(name = 'apyauth', 
     version = '0.3.2',
     license = 'MIT',
     packages = setuptools.find_packages(),
