@@ -2,9 +2,9 @@ import ast
 import requests
 import json
 import os
-import oauth2py.oauthEndpoints
+import apyauth.oauth20.oauthEndpoints.oauthEndpoints
 
-class refreshTkn(oauth2py.oauthEndpoints.defEndpoints):
+class refreshTkn(apyauth.oauth20.oauthEndpoints.defEndpoints):
     """
     This class can be used to refresh an access Token. 
 
@@ -19,7 +19,7 @@ class refreshTkn(oauth2py.oauthEndpoints.defEndpoints):
         self.clientId = clientid
         self.clientSecret = clientsecret
         self.app = app
-        oauth2py.oauthEndpoints.defEndpoints.__init__(self)
+        apyauth.oauth20.oauthEndpoints.defEndpoints.__init__(self)
 
     def refreshToken(self):
         """
