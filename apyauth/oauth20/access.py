@@ -7,7 +7,7 @@ import random
 import string
 import datetime
 from dateutil import tz
-import oauth2py.oauthEndpoints
+import apyauth.oauthEndpoints
 
 class access(oauth2py.oauthEndpoints.defEndpoints):
     """
