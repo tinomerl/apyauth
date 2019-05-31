@@ -9,7 +9,7 @@ import datetime
 from dateutil import tz
 import apyauth.oauth20.oauthEndpoints
 
-class access(oauth2py.oauthEndpoints.defEndpoints):
+class access(apyauth.oauth20.oauthEndpoints.defEndpoints):
     """
     Class for an Access Token. 
 
@@ -23,7 +23,7 @@ class access(oauth2py.oauthEndpoints.defEndpoints):
         self.clientSecret = clientsecret
         self.app = app
         self.redirect = 'http://localhost:1410/'
-        oauth2py.oauthEndpoints.defEndpoints.__init__(self)
+        apyauth.oauth20.oauthEndpoints.defEndpoints.__init__(self)
 
     def appendgitignore(self):
         """
