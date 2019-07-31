@@ -2,7 +2,7 @@ import ast
 import requests
 import json
 import os
-import apyauth.oauth20.oauthEndpoints.oauthEndpoints
+import apyauth.oauth20.oauthEndpoints
 
 class refreshTkn(apyauth.oauth20.oauthEndpoints.defEndpoints):
     """
