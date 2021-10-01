@@ -36,7 +36,9 @@ class Oauth2Session:
         self.redirect_uri = redirect_uri
         self.scope = scope
         self.params = params
-        self.expiry_date: datetime.datetime = datetime.datetime(1970, 1, 1, 0, 0, 0)
+        self.expiry_date: datetime.datetime = datetime.datetime(
+            1970, 1, 1, 0, 0, 0
+        ).replace(tzinfo=tz.tzlocal())
 
     def request_token(self):
         if self.refresh_token != "":
