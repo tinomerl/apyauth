@@ -4,8 +4,8 @@
 1.0.0
 
 ## Tested and working with following oauth Endpoints
-* Hubspot
-* facebook
+* HubSpot
+* Facebook
 * Google
     * Analytics
     * Ads
