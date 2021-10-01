@@ -211,7 +211,7 @@ class Oauth2Session:
             "grant_type": "refresh_token",
             "client_id": client_id,
             "client_secret": client_secret,
-            "refres_token": refresh_token,
+            "refresh_token": refresh_token,
         }
         ans = requests.post(refresh_token_url, data=data, headers=headers)
         content: Dict = ans.json()
