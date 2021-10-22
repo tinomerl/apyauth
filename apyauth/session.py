@@ -167,7 +167,6 @@ class Oauth2Session:
 
         auth_params: dict = {
             "client_id": client_id,
-            "client_secret": client_secret,
             "redirect_uri": redirect_uri,
             "state": state,
             "response_type": "code",
@@ -185,7 +184,7 @@ class Oauth2Session:
         }
         ans = requests.post(access_token_url, data=data, headers=headers)
         status_code = ans.status_code
-        if status_code == 404:
+        if status_code != 200:
             get_params: dict = {
                 "client_id": client_id,
                 "client_secret": client_secret,
