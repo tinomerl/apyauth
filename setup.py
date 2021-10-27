@@ -10,5 +10,6 @@ setuptools.setup(
     license="MIT",
     packages=setuptools.find_packages(),
     description="Handy module for oauth2.0 Authentication.",
-    install_requires=[MAIN_REQUIREMENTS],
+    install_requires=MAIN_REQUIREMENTS,
+    extras_requires={"tests": DEV_REQUIREMENTS},
 )

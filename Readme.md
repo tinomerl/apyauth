@@ -1,7 +1,7 @@
 # Functional Wrapper for OAuth2.0
 
 ## Current Version
-1.0.0
+1.0.4
 
 ## Tested and working with following oauth Endpoints
 * HubSpot
