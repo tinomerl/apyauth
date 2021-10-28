@@ -176,8 +176,8 @@ class Oauth2Session:
             "response_type": "code",
             "scope": "%20".join(scope),
         }
-        auth_params.update(params)
-        code = self.get_code(authorize_url, auth_params)
+        params.update(auth_params)
+        code = self.get_code(authorize_url, params)
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         data = {
             "grant_type": "authorization_code",
@@ -198,7 +198,7 @@ class Oauth2Session:
             ans = requests.get(access_token_url, params=get_params)
 
         content: Dict[str, str] = ans.json()
-        self.refresh_token = content["refresh_token"]
+        self.refresh_token = content.get("refresh_token") or ""
         self.access_token = content["access_token"]
         return ans
 
