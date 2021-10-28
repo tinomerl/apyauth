@@ -104,8 +104,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# tests and tokens
-/tests
-
 #Tokens
 .*-token

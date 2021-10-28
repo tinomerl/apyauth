@@ -3,11 +3,12 @@ import os
 import random
 import socket
 import string
-from typing import Dict, List
 import webbrowser
+from typing import Dict, List
+from urllib import parse
 
-from dateutil import tz
 import requests
+from dateutil import tz
 
 
 class Oauth2Session:
@@ -90,7 +91,9 @@ class Oauth2Session:
         Returns:\n
         Code Parameter send from the authentication Server.
         """
-        auth_params: str = "&".join([f"{key}={value}" for key, value in params.items()])
+        auth_params: str = "&".join(
+            [f"{key}={value}" for key, value in params.items()]
+        )
         webbrowser.open(f"{url}?{auth_params}")
         res = self.port_listen()
         res = res.decode("utf-8").splitlines()
@@ -105,8 +108,8 @@ class Oauth2Session:
         if params["state"] != params_dict["state"]:
             raise Exception("Session Error state is not valid")
 
-        code = params_dict.get("code")
-        return code
+        code: str = params_dict["code"]
+        return parse.unquote(code)
 
     def port_listen(self):
         """
@@ -162,7 +165,8 @@ class Oauth2Session:
         Access Token from the Response
         """
         state = "".join(
-            random.choice(string.ascii_lowercase + string.digits) for _ in range(50)
+            random.choice(string.ascii_lowercase + string.digits)
+            for _ in range(50)
         )
 
         auth_params: dict = {
@@ -172,8 +176,8 @@ class Oauth2Session:
             "response_type": "code",
             "scope": "%20".join(scope),
         }
-        auth_params.update(params)
-        code = self.get_code(authorize_url, auth_params)
+        params.update(auth_params)
+        code = self.get_code(authorize_url, params)
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         data = {
             "grant_type": "authorization_code",
@@ -193,9 +197,9 @@ class Oauth2Session:
             }
             ans = requests.get(access_token_url, params=get_params)
 
-        content: Dict = ans.json()
-        self.refresh_token = content.get("refresh_token")
-        self.access_token = content.get("access_token")
+        content: Dict[str, str] = ans.json()
+        self.refresh_token = content.get("refresh_token") or ""
+        self.access_token = content["access_token"]
         return ans
 
     def generate_refresh_token(
@@ -205,7 +209,9 @@ class Oauth2Session:
         client_id: str,
         client_secret: str,
     ):
-        headers = {"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"}
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+        }
         data = {
             "grant_type": "refresh_token",
             "client_id": client_id,
@@ -213,8 +219,9 @@ class Oauth2Session:
             "refresh_token": refresh_token,
         }
         ans = requests.post(refresh_token_url, data=data, headers=headers)
-        content: Dict = ans.json()
-        self.access_token = content.get("access_token")
+        content: Dict[str, str] = ans.json()
+        access_token: str = content["access_token"]
+        self.access_token = access_token
         return ans
 
     def calc_expiry_date(self, response_date, expires_in):

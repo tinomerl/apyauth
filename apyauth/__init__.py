@@ -1,1 +1,1 @@
-from .session import Oauth2Session
+from .session import Oauth2Session  # noqa
